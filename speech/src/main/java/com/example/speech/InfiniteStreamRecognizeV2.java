@@ -110,6 +110,9 @@ public class InfiniteStreamRecognizeV2 {
         byte[] data = new byte[BYTES_PER_BUFFER];
         while (targetDataLine.isOpen()) {
           try {
+            // The read method blocks until the requested amount of data is available.
+            // This implicitly handles rate-limiting, ensuring we don't send audio
+            // faster than real-time (approx 200ms chunk per iteration).
             int numBytesRead = targetDataLine.read(data, 0, data.length);
             if ((numBytesRead <= 0) && (targetDataLine.isOpen())) {
               continue;
